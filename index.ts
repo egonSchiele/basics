@@ -14,10 +14,12 @@ program.name("basics").description("Tech notes").version("0.0.1");
 
 program
   .command("add")
+  .alias("a")
   .description("Add file to pasteboard")
-  .argument("<filepath>", "file to add")
-  .action((filepath) => {
-    add(filepath);
+  .option("-c, --category <name>", "Category to add to")
+
+  .action((options) => {
+    add(options.category);
   });
 
 program
