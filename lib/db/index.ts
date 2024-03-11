@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import { Category } from "./entity/Category";
 import { getConfig, log } from "@/lib/utils";
 import init from "@/commands/init";
+import { Tip } from "./entity/Tip";
 
 let _connection: DataSource | null = null;
 
@@ -27,7 +28,7 @@ export async function dbConnection() {
     username: config!.username,
     password: config!.password,
     database: "basics",
-    entities: [Category],
+    entities: [Category, Tip],
     /* synchronize: true, */
     logging: false,
     ssl: true,
@@ -49,4 +50,9 @@ export async function dbConnection() {
 export async function getCategoryRepository() {
   const connection = await dbConnection();
   return connection.getRepository(Category);
+}
+
+export async function getTipRepository() {
+  const connection = await dbConnection();
+  return connection.getRepository(Tip);
 }

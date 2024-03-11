@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { Tip } from "./Tip";
 
 @Entity({ name: "categories" })
 export class Category {
@@ -22,6 +24,9 @@ export class Category {
 
   @Column("boolean", { default: false })
   hidden!: boolean;
+
+  @OneToMany(() => Tip, (tip) => tip.category) // note: we will create author property in the tip class below
+  tips!: Tip[];
 
   @CreateDateColumn({ name: "created_at" })
   createdAt!: string;
