@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { Paste } from "./entity/Paste";
+import { Category } from "./entity/Category";
 import { getConfig, log } from "@/lib/utils";
 import init from "@/commands/init";
 
@@ -26,9 +26,9 @@ export async function dbConnection() {
     port: config!.port,
     username: config!.username,
     password: config!.password,
-    database: "paste",
-    entities: [Paste],
-    synchronize: true,
+    database: "basics",
+    entities: [Category],
+    /* synchronize: true, */
     logging: false,
     ssl: true,
     extra: {
@@ -46,7 +46,7 @@ export async function dbConnection() {
   return _connection;
 }
 
-export async function getPasteRepository() {
+export async function getCategoryRepository() {
   const connection = await dbConnection();
-  return connection.getRepository(Paste);
+  return connection.getRepository(Category);
 }
