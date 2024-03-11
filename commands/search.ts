@@ -7,12 +7,18 @@ import { Category } from "@/lib/db/entity/Category";
 export default async function search(term: string, category: string) {
   const repo = await getTipRepository();
 
-  const allTips = await repo
+  const query = repo
     .createQueryBuilder("tips")
-    .where("title ILIKE :term", { term: `%${term}%` })
-    .orWhere("text ILIKE :term", { term: `%${term}%` })
-    .orderBy("id", "ASC")
-    .getRawMany();
+    .where("title ILIKE :term OR text ILIKE :term", { term: `%${term}%` })
+    .innerJoinAndSelect("tips.category", "category")
+    .orderBy("tips.id", "ASC");
+
+  if (category !== "all") {
+    query.andWhere("category.name = :category", { category });
+  }
+
+  const allTips = await query.getRawMany();
+
   // var t = new Table();
 
   // also tips_category_id
