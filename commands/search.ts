@@ -4,6 +4,20 @@ import { exit } from "process";
 import Table from "easy-table";
 import c from "ansi-colors";
 import { Category } from "@/lib/db/entity/Category";
+import figlet = require("figlet");
+import { marked } from "marked";
+import consoleRenderer from "@/lib/renderer/consoleRenderer";
+type TipFromDb = {
+  tips_id: number;
+  tips_title: string;
+  tips_text: string;
+  category_name: string;
+};
+
+marked.setOptions({
+  renderer: consoleRenderer,
+});
+
 export default async function search(term: string, category: string) {
   const repo = await getTipRepository();
 
@@ -17,14 +31,28 @@ export default async function search(term: string, category: string) {
     query.andWhere("category.name = :category", { category });
   }
 
-  const allTips = await query.getRawMany();
+  const allTips: TipFromDb[] = await query.getRawMany();
 
-  // var t = new Table();
-
-  // also tips_category_id
-  allTips.forEach((category) => {
-    console.log(c.cyan(category.tips_id), c.yellow(category.tips_title));
-    console.log(category.tips_text);
+  const categories: Record<string, TipFromDb[]> = {};
+  allTips.forEach((tip) => {
+    categories[tip.category_name] ||= [];
+    categories[tip.category_name].push(tip);
   });
+
+  Object.keys(categories).forEach((category) => {
+    console.log(c.cyan(figlet.textSync(category)));
+
+    categories[category].forEach((tip) => {
+      console.log(
+        c.bgYellow.black(` ${tip.tips_id} `) +
+          c.bgCyan.black(` ${tip.tips_title} `)
+      );
+      console.log(marked(tip.tips_text));
+
+      console.log();
+    });
+    console.log("\n");
+  });
+
   exit(0);
 }

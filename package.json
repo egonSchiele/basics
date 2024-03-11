@@ -6,18 +6,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "ncc build index.ts -o dist",
-    "basics:install": "chmod +x dist/index.js && mv dist/index.js ~/.bin/basics"
+    "basics:install": "chmod +x dist/index.js && mv dist/index.js ~/.bin/basics && cp -r dist/fonts ~/.bin/fonts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/figlet": "^1.5.8",
+    "@types/marked": "^6.0.0",
     "@types/node": "^20.11.24",
     "@vercel/ncc": "^0.38.1",
     "ansi-colors": "^4.1.3",
     "commander": "^12.0.0",
     "easy-table": "^1.2.0",
     "enquirer": "^2.4.1",
+    "figlet": "^1.7.0",
+    "highlight-cli": "^1.0.0",
     "pg": "^8.11.3",
     "typeorm": "^0.3.20",
     "typescript": "^5.3.3"
