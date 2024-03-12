@@ -1,9 +1,10 @@
-import { getCategoryRepository } from "@/lib/db";
+import { getCategoryRepository, getTipRepository } from "@/lib/db";
 import { readFileSync } from "fs";
 import { Category } from "@/lib/db/entity/Category";
 import { basename } from "path";
 import { exit, title } from "process";
 import inquirer, { DistinctQuestion } from "inquirer";
+import { Tip } from "@/lib/db/entity/Tip";
 
 export default async function add(category?: string | undefined) {
   const questions: ReadonlyArray<DistinctQuestion> = [
@@ -23,7 +24,7 @@ export default async function add(category?: string | undefined) {
   if (!category) {
     const categories = await getCategoryRepository();
     const allCategories = await categories.find();
-    const choices = allCategories.map((c) => c.name);
+    const choices = allCategories.map((c) => ({ name: c.name, value: c.id }));
     // @ts-ignore
     questions.unshift({
       type: "list",
@@ -36,18 +37,28 @@ export default async function add(category?: string | undefined) {
   const responses = (await inquirer.prompt(questions, { category })) as {
     title: string;
     text: string;
-    category: string;
+    category: number;
   };
 
-  console.log({ responses });
-  exit(0);
+  const categoryRow = await getCategory({ id: responses.category });
 
-  const paste = new Category();
-  /*   paste.title = basename(filepath);
-  paste.text = text;
- */
-  const pasteRepository = await getCategoryRepository();
-  await pasteRepository.save(paste);
-  console.log("paste has been saved");
+  if (!categoryRow) {
+    console.error("Category not found with id", responses.category);
+    exit(1);
+  }
+
+  const tip = new Tip();
+  tip.title = responses.title;
+  tip.text = responses.text;
+  tip.category = categoryRow;
+
+  const repo = await getTipRepository();
+  await repo.save(tip);
+  console.log("tip saved");
   exit(0);
+}
+
+async function getCategory({ id }: { id: number }) {
+  const categories = await getCategoryRepository();
+  return categories.findOneBy({ id });
 }

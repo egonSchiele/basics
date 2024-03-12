@@ -12,6 +12,7 @@ export default async function list() {
     .select(["id", "name", "nice_name", "description", "hidden"])
     .orderBy("id", "ASC")
     .getRawMany();
+
   var t = new Table();
 
   allCategories.forEach((category) => {
