@@ -1,25 +1,32 @@
-import { getCategoryRepository } from "@/lib/db";
+import { getCategoryRepository, getTipRepository } from "@/lib/db";
 import { Category } from "@/lib/db/entity/Category";
 import { exit } from "process";
 import c from "ansi-colors";
+import { Tip } from "@/lib/db/entity/Tip";
+import { marked } from "marked";
+import consoleRenderer from "@/lib/renderer/consoleRenderer";
+import { TipFromDb } from "@/lib/types";
+marked.setOptions({
+  renderer: consoleRenderer,
+});
 export default async function show(id?: string) {
-  const repo = await getCategoryRepository();
-  let paste: Category | null;
+  const repo = await getTipRepository();
+  let tip: Tip | null;
   if (id && id !== "-1") {
-    paste = await repo.findOneBy({
+    tip = await repo.findOneBy({
       id: parseInt(id),
     });
   } else {
-    paste = await repo
-      .createQueryBuilder("paste")
-      .orderBy("id", "DESC")
-      .getOne();
+    tip = await repo.createQueryBuilder("tips").orderBy("id", "DESC").getOne();
   }
-  if (!paste) {
-    console.log("No paste found");
+  if (!tip) {
+    console.log("No tip found");
     exit(1);
   }
-  /*   console.log(c.cyan(paste.title));
-  console.log(paste.text);
- */ exit(0);
+  console.log(
+    c.bgYellow.black(` ${tip.id} `) + c.bgCyan.black(` ${tip.title} `)
+  );
+  console.log(marked(tip.text));
+
+  exit(0);
 }

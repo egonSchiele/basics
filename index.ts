@@ -7,6 +7,7 @@ import init from "./commands/init";
 import config from "./commands/config";
 import { log } from "@/lib/utils";
 import search from "./commands/search";
+import edit from "./commands/edit";
 
 const program = new Command();
 
@@ -46,10 +47,19 @@ program
 
 program
   .command("show")
-  .description("Show one or more pastes")
-  .argument("[id]", "paste id")
+  .description("Show one or more tips")
+  .argument("[id]", "tip id")
   .action((id) => {
     show(id);
+  });
+
+program
+  .command("edit")
+  .alias("e")
+  .description("Edit a tip")
+  .argument("<id>", "tip id")
+  .action((id) => {
+    edit(id);
   });
 
 program

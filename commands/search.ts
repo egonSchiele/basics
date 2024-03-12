@@ -7,12 +7,7 @@ import { Category } from "@/lib/db/entity/Category";
 import figlet = require("figlet");
 import { marked } from "marked";
 import consoleRenderer from "@/lib/renderer/consoleRenderer";
-type TipFromDb = {
-  tips_id: number;
-  tips_title: string;
-  tips_text: string;
-  category_name: string;
-};
+import { TipFromDb } from "@/lib/types";
 
 marked.setOptions({
   renderer: consoleRenderer,
