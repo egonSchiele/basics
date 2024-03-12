@@ -7,6 +7,14 @@ import inquirer, { DistinctQuestion } from "inquirer";
 import { Tip } from "@/lib/db/entity/Tip";
 
 export default async function add(category?: string | undefined) {
+  let categoryRow: Category | null = null;
+  if (category) {
+    categoryRow = await getCategory({ name: category });
+    if (!categoryRow) {
+      console.error("Category not found with name", category);
+      exit(1);
+    }
+  }
   const questions: ReadonlyArray<DistinctQuestion> = [
     {
       type: "input",
@@ -40,8 +48,9 @@ export default async function add(category?: string | undefined) {
     category: number;
   };
 
-  const categoryRow = await getCategory({ id: responses.category });
-
+  if (categoryRow === null) {
+    categoryRow = await getCategory({ id: responses.category });
+  }
   if (!categoryRow) {
     console.error("Category not found with id", responses.category);
     exit(1);
@@ -58,7 +67,7 @@ export default async function add(category?: string | undefined) {
   exit(0);
 }
 
-async function getCategory({ id }: { id: number }) {
+async function getCategory(options: { id?: number; name?: string }) {
   const categories = await getCategoryRepository();
-  return categories.findOneBy({ id });
+  return categories.findOneBy(options);
 }
