@@ -35,13 +35,13 @@ program
   .command("search")
   .alias("s")
   .description("Search all tips")
-  .argument("<term>", "search term")
+  .argument("[term]", "search term", null)
   .option(
     "-c, --category <name>",
     "Category to search in (default: all)",
     "all"
   )
-  .action((term, options) => {
+  .action((term: string | null, options) => {
     search(term, options.category);
   });
 

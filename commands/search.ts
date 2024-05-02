@@ -13,18 +13,31 @@ marked.setOptions({
   renderer: consoleRenderer,
 });
 
-export default async function search(term: string, category: string) {
+export default async function search(term: string | null, category: string) {
   const repo = await getTipRepository();
+  const query = repo.createQueryBuilder("tips");
 
-  const query = repo
-    .createQueryBuilder("tips")
-    .where("title ILIKE :term OR text ILIKE :term", { term: `%${term}%` })
+  if (term && category !== "all") {
+    query.where(
+      "(title ILIKE :term OR text ILIKE :term) AND category.name = :category",
+      {
+        term: `%${term}%`,
+        category,
+      }
+    );
+  } else if (term) {
+    query.where("title ILIKE :term OR text ILIKE :term", {
+      term: `%${term}%`,
+    });
+  } else if (category !== "all") {
+    query.where("category.name = :category", {
+      category,
+    });
+  }
+
+  query
     .innerJoinAndSelect("tips.category", "category")
     .orderBy("tips.id", "ASC");
-
-  if (category !== "all") {
-    query.andWhere("category.name = :category", { category });
-  }
 
   const allTips: TipFromDb[] = await query.getRawMany();
 
@@ -33,6 +46,19 @@ export default async function search(term: string, category: string) {
     categories[tip.category_name] ||= [];
     categories[tip.category_name].push(tip);
   });
+
+  var t = new Table();
+
+  console.log(c.yellow(`Found ${allTips.length} tips`));
+  console.log();
+
+  allTips.forEach((tip) => {
+    t.cell(c.cyan("category"), tip.category_name);
+    t.cell(c.cyan("id"), tip.tips_id);
+    t.cell(c.cyan("title"), tip.tips_title);
+    t.newRow();
+  });
+  console.log(t.toString());
 
   Object.keys(categories).forEach((category) => {
     console.log(c.cyan(figlet.textSync(category)));
