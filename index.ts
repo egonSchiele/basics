@@ -16,7 +16,7 @@ program.name("basics").description("Tech notes").version("0.0.1");
 program
   .command("add")
   .alias("a")
-  .description("Add file to pasteboard")
+  .description("Add a new tip to basics")
   .option("-c, --category <name>", "Category to add to")
 
   .action((options) => {
