@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "ncc build index.ts -o dist",
-    "basics:install": "chmod +x dist/index.js && mv dist/index.js ~/.bin/basics && cp -r dist/fonts ~/.bin/fonts"
+    "basics:install": "chmod +x dist/index.js && mv dist/index.js ~/.bin/basics"
   },
   "keywords": [],
   "author": "",

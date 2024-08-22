@@ -8,6 +8,7 @@ import config from "./commands/config";
 import { log } from "@/lib/utils";
 import search from "./commands/search";
 import edit from "./commands/edit";
+import backup from "./commands/backup";
 
 const program = new Command();
 
@@ -76,4 +77,16 @@ program
     config();
   });
 
+program
+  .command("backup")
+  .alias("b")
+  .description("Backup all data")
+  .option(
+    "-o, --outfile <name>",
+    "File to write to (default: stdout)",
+    "stdout"
+  )
+  .action((options) => {
+    backup(options.outfile === "stdout" ? null : options.outfile);
+  });
 program.parse();
