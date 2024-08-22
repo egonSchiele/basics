@@ -8,7 +8,7 @@ const consoleRenderer = new marked.Renderer();
 // Override the code block renderer to use highlight-cli for syntax highlighting
 consoleRenderer.code = function (code, language) {
   const highlightedCode = highlight(code);
-  return `\n${highlightedCode}\n\n`;
+  return `\n\`\`\`\n${highlightedCode}\n\`\`\`\n\n`;
 };
 
 /*
@@ -75,7 +75,7 @@ consoleRenderer.checkbox = function (checked) {
 };
 
 consoleRenderer.paragraph = function (text) {
-  return c.yellow(text) + "\n";
+  return c.gray(text) + "\n";
 };
 
 consoleRenderer.table = function (header, body) {
@@ -99,7 +99,7 @@ consoleRenderer.em = function (text) {
 };
 
 consoleRenderer.codespan = function (code) {
-  return highlight(code);
+  return "`" + highlight(code) + "`";
 };
 
 consoleRenderer.br = function () {

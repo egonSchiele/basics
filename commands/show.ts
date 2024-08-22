@@ -1,11 +1,9 @@
-import { getCategoryRepository, getTipRepository } from "@/lib/db";
-import { Category } from "@/lib/db/entity/Category";
-import { exit } from "process";
-import c from "ansi-colors";
+import { getTipRepository } from "@/lib/db";
 import { Tip } from "@/lib/db/entity/Tip";
-import { marked } from "marked";
 import consoleRenderer from "@/lib/renderer/consoleRenderer";
-import { TipFromDb } from "@/lib/types";
+import c from "ansi-colors";
+import { marked } from "marked";
+import { exit } from "process";
 marked.setOptions({
   renderer: consoleRenderer,
 });

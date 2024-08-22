@@ -4,7 +4,6 @@ import { exit } from "process";
 import Table from "easy-table";
 import c from "ansi-colors";
 import { Category } from "@/lib/db/entity/Category";
-import figlet = require("figlet");
 import { marked } from "marked";
 import consoleRenderer from "@/lib/renderer/consoleRenderer";
 import { TipFromDb } from "@/lib/types";
@@ -61,7 +60,7 @@ export default async function search(term: string | null, category: string) {
   console.log(t.toString());
 
   Object.keys(categories).forEach((category) => {
-    console.log(c.cyan(figlet.textSync(category)));
+    console.log(c.cyan(c.bold(category)));
 
     categories[category].forEach((tip) => {
       console.log(
